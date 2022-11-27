@@ -14,21 +14,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d(TAG, "Before runBlocking")
-        runBlocking {
-            launch(Dispatchers.IO) {
-                delay(3000L)
-                Log.d(TAG, "Finished IO Coroutine 1")
+        val job = GlobalScope.launch(Dispatchers.Default) {
+            repeat(5) {
+                Log.d(TAG, "Coroutine is still working...")
+                delay(1000L)
             }
-            launch(Dispatchers.IO) {
-                delay(3000L)
-                Log.d(TAG, "Finished IO Coroutine 2")
-            }
-            Log.d(TAG, "Start of runBlocking")
-            delay(5000L)
-            Log.d(TAG, "End of runBlocking")
         }
-        Log.d(TAG, "After runBlocking")
+
+        runBlocking {
+            job.join()
+            Log.d(TAG, "Main Thread is continuing...")
+        }
 
     }
 
